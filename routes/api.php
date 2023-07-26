@@ -12,4 +12,5 @@ Route::controller(CustomerController::class)->group(function() {
     Route::get('/customers', 'index')->name('customer.index');
     Route::post('/customers', 'store')->name('customer.store');
     Route::get('/customers/{cpf_cnpj}', 'show')->name('customer.show');
+    Route::delete('/customers/{cpf_cnpj}', 'delete')->name('customer.delete');
 });

@@ -1,5 +1,5 @@
 ## Desafio
-Desenvolver uma API em PHP utilizando o Framewok Laravel e Banco de Dados relacional MySQL.
+Desenvolver uma API Rest em PHP utilizando o Framewok Laravel e Banco de Dados relacional MySQL.
 
 ## Descrição
 

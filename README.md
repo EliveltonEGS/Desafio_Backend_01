@@ -11,7 +11,7 @@ Eu como gerente gostaria de cadastrar os Clientes e seus respectivos contatos
 * Quando pessoa jurídica deve ser informado o CNPJ;
 * Listar todos os clientes;
 * Buscar cliente por CPF/CNPJ;
-* Alterar dados do clienete;
+* Alterar dados do cliente;
 * Excluir o cliente;
 * O Cliente pode ter 1 ou vários contatos;
 * Deverá ser utilizado migrations.

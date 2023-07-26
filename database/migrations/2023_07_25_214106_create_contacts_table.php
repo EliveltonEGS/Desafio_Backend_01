@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('phone', 13);
             $table->string('email', 20);
             $table->string('cellphone', 14);
-            $table->foreignIdFor(Customer::class);
+            $table->bigInteger('customer_id')->unsigned();
+                $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            //$table->foreignIdFor(Customer::class);
             // $table->timestamps();
         });
     }

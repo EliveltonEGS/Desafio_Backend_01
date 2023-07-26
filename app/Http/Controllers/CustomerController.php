@@ -58,4 +58,12 @@ class CustomerController extends Controller
 
         return response()->json($customer);
     }
+
+    public function delete(string $cpf_cnpj)
+    {
+        $customer = Customer::with('contacts')->where('identification', $cpf_cnpj)->get();
+        Customer::destroy($customer[0]->id);
+
+        return response()->json(['message' => 'Customer deleted with success.']);
+    }
 }

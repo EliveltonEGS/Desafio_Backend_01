@@ -20,7 +20,7 @@ class CustomerController extends Controller
         //     "name": "test",
         //     "type": "PF",
         //     "identification": "12",
-        //     "categories": [
+        //     "contacts": [
         //         {
         //             "phone": "123",
         //             "email": "test@gmail",
@@ -41,10 +41,21 @@ class CustomerController extends Controller
         }
 
         $customer = Customer::create($request->only('name', 'type', 'identification'));
-        $customer->contacts()->createMany($request->get('categories'));
+        $customer->contacts()->createMany($request->get('contacts'));
         $result = $customer;
         $result = $result->contacts;
 
         return response()->json($customer, 201);
+    }
+
+    public function show(string $cpf_cnpj)
+    {
+        $customer = Customer::with('contacts')->where('identification', $cpf_cnpj)->get()->toArray();
+
+        if(count($customer) == 0) {
+            return response()->json(['message' => 'Customer not exists'], 404);
+        }
+
+        return response()->json($customer);
     }
 }

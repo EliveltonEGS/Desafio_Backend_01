@@ -23,42 +23,42 @@ class CustomerController extends Controller
         }
 
         $customer = Customer::create($request->only('name', 'type', 'identification'));
-        $customer->contacts()->createMany($request->get('categories'));
+        $customer->contacts()->createMany($request->get('contacts'));
         $result = $customer;
         $result = $result->contacts;
 
         return response()->json($customer, 201);
     }
 
-    public function show(string $identification)
+    public function show(string $id)
     {
-        $customer = Customer::with('contacts')->where('identification', $identification)->get()->toArray();
+        $customer = Customer::with('contacts')->find($id);
 
-        if(count($customer) == 0) {
+        if(!$customer) {
             return response()->json(['message' => 'Customer not exists'], 404);
         }
 
         return response()->json($customer);
     }
 
-    public function delete(string $identification)
+    public function delete(string $id)
     {
-        $customer = Customer::with('contacts')->where('identification', $identification)->get();
+        $customer = Customer::find($id)->get();
         Customer::destroy($customer[0]->id);
 
         return response()->json(['message' => 'Customer deleted with success.'], 201);
     }
 
-    public function update(Request $request, string $identification)
+    public function update(Request $request, string $id)
     {
-        $customer = Customer::where('identification', $identification)->get()->toArray();
+        $customer = Customer::find($id)->get()->toArray();
 
         if(count($customer) == 0) {
             return response()->json(['message' => 'Customer not exists'], 404);
         }
 
-        Customer::where('identification', $identification)->update($request->only('name', 'type', 'identification'));
-        foreach ($request->get('categories') as $item) {
+        Customer::find($id)->update($request->only('name', 'type', 'identification'));
+        foreach ($request->get('contacts') as $item) {
             Contact::find($item['id'])->update([
                 'phone' => $item['phone'],
                 'email' => $item['email'],

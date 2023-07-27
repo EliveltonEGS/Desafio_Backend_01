@@ -10,47 +10,29 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = Customer::all();
+        $customers = Customer::with('contacts')->get();
         return response()->json($customers);
     }
 
     public function store(Request $request)
     {
-        // {
-        //     "name": "test",
-        //     "type": "PF",
-        //     "identification": "12",
-        //     "contacts": [
-        //         {
-        //             "phone": "123",
-        //             "email": "test@gmail",
-        //             "cellphone": "54652"
-        //         },
-        //         {
-        //             "phone": "1233",
-        //             "email": "test@g3mail",
-        //             "cellphone": "54653"
-        //         }
-        //     ]
-        // }
+        $result = Customer::where('identification', $request->get('identification'))->get()->toArray();
 
-        $identification = Customer::where('identification', $request->get('identification'))->get()->toArray();
-
-        if(count($identification) > 0) {
-            return response()->json(['message' => 'Customer already registered'], 404);
+        if(count($result) > 0) {
+            return response()->json(['message' => 'Customer with identification already registered'], 404);
         }
 
         $customer = Customer::create($request->only('name', 'type', 'identification'));
-        $customer->contacts()->createMany($request->get('contacts'));
+        $customer->contacts()->createMany($request->get('categories'));
         $result = $customer;
         $result = $result->contacts;
 
         return response()->json($customer, 201);
     }
 
-    public function show(string $cpf_cnpj)
+    public function show(string $identification)
     {
-        $customer = Customer::with('contacts')->where('identification', $cpf_cnpj)->get()->toArray();
+        $customer = Customer::with('contacts')->where('identification', $identification)->get()->toArray();
 
         if(count($customer) == 0) {
             return response()->json(['message' => 'Customer not exists'], 404);
@@ -59,11 +41,31 @@ class CustomerController extends Controller
         return response()->json($customer);
     }
 
-    public function delete(string $cpf_cnpj)
+    public function delete(string $identification)
     {
-        $customer = Customer::with('contacts')->where('identification', $cpf_cnpj)->get();
+        $customer = Customer::with('contacts')->where('identification', $identification)->get();
         Customer::destroy($customer[0]->id);
 
-        return response()->json(['message' => 'Customer deleted with success.']);
+        return response()->json(['message' => 'Customer deleted with success.'], 201);
+    }
+
+    public function update(Request $request, string $identification)
+    {
+        $customer = Customer::where('identification', $identification)->get()->toArray();
+
+        if(count($customer) == 0) {
+            return response()->json(['message' => 'Customer not exists'], 404);
+        }
+
+        Customer::where('identification', $identification)->update($request->only('name', 'type', 'identification'));
+        foreach ($request->get('categories') as $item) {
+            Contact::find($item['id'])->update([
+                'phone' => $item['phone'],
+                'email' => $item['email'],
+                'cellphone' => $item['cellphone']
+            ]);
+        }
+
+        return response()->json(Customer::with('contacts')->find($customer[0]['id']), 201);
     }
 }

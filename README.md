@@ -29,6 +29,9 @@ Eu como gerente gostaria de cadastrar os Clientes e seus respectivos contatos
 
 <hr/>
 
+## Modelagem
+<img src="https://github.com/EliveltonEGS/desafio_backend_01/assets/58617663/854dce8f-0ea1-4c74-8f1b-f7ba1082395b"/>
+
 ## EndPoints
 
 ###### POST: http://localhost:8989/api/customers

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CustomerResource;
 use App\Models\Contact;
 use App\Models\Customer;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::with('contacts')->get();
-        return response()->json($customers);
+        return CustomerResource::collection($customers);
     }
 
     public function store(Request $request)
@@ -35,10 +36,10 @@ class CustomerController extends Controller
         $customer = Customer::with('contacts')->find($id);
 
         if(!$customer) {
-            return response()->json(['message' => 'Customer not exists'], 404);
+            return response()->json(['data' => ['message' => 'Customer not exists']], 404);
         }
 
-        return response()->json($customer);
+        return CustomerResource::make($customer);
     }
 
     public function delete(string $id)
